@@ -13,7 +13,7 @@ public class HotelReservationSystemCli {
         do {
             menu();
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character, meaning read the newline character and discard it
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -30,19 +30,46 @@ public class HotelReservationSystemCli {
                     hotelReservationSystem.createReservation(guestName, roomNumber, checkInDate, checkOutDate);
                     break;
                 case 2:
-                    // TODO: Implement modify reservation
+                    System.out.print("Enter reservation ID: ");
+                    int reservationId = scanner.nextInt();
+                    Reservation reservation = hotelReservationSystem.findReservation(reservationId);
+                    System.out.print(reservation);
+                    System.out.print("Enter new guest name: ");
+                    guestName = scanner.nextLine();
+                    System.out.print("Enter new room number: ");
+                    roomNumber = scanner.nextInt();
+                    System.out.print("Enter new check-in date (yyyy-MM-dd): ");
+                    checkInDateStr = scanner.nextLine();
+                    checkInDate = parseDate(checkInDateStr);
+                    System.out.print("Enter new check-out date (yyyy-MM-dd): ");
+                    checkOutDateStr = scanner.nextLine();
+                    checkOutDate = parseDate(checkOutDateStr);
+                    hotelReservationSystem.modifyReservation(reservationId, guestName, roomNumber, checkInDate, checkOutDate);
                     break;
                 case 3:
-                    // TODO: Implement cancel reservation
+                    System.out.print("Enter reservation ID: ");
+                    reservationId = scanner.nextInt();
+                    hotelReservationSystem.cancelReservation(reservationId);
                     break;
                 case 4:
-                    // TODO: Implement display reservation
+                    System.out.print("Enter reservation ID: ");
+                    reservationId = scanner.nextInt();
+                    reservation = hotelReservationSystem.findReservation(reservationId);
+                    System.out.print(reservation);
                     break;
                 case 5:
-                    // TODO: Implement display all reservations
+                    for (Reservation res : hotelReservationSystem.getReservations()) {
+                        System.out.print(res);
+                    }
                     break;
                 case 6:
-                    // TODO: Implement check room availability
+                    System.out.print("Enter check-in date (yyyy-MM-dd): ");
+                    checkInDateStr = scanner.nextLine();
+                    checkInDate = parseDate(checkInDateStr);
+                    System.out.print("Enter check-out date (yyyy-MM-dd): ");
+                    checkOutDateStr = scanner.nextLine();
+                    checkOutDate = parseDate(checkOutDateStr);
+                    hotelReservationSystem.checkRoomAvailability(checkInDate, checkOutDate);
                     break;
                 case 7:
                     System.out.println("Exiting Hotel X reservation system");
