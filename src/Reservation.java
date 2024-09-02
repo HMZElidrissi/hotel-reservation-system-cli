@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Reservation {
@@ -58,12 +59,17 @@ public class Reservation {
 
     @Override
     public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return "Reservation{" +
                 "id=" + id +
                 ", guestName='" + guestName + '\'' +
-                ", room=" + room +
-                ", checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
+                ", room=" + room.getRoomNumber() +
+                ", checkInDate=" + sdf.format(checkInDate) +
+                ", checkOutDate=" + sdf.format(checkOutDate) +
                 '}';
+    }
+
+    public void cancelReservation() {
+        room.removeReservation(this);
     }
 }
