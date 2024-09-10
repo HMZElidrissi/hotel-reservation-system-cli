@@ -4,13 +4,12 @@ import enums.RoomType;
 
 import java.util.List;
 
-public class Room extends Model{
+public class Room {
     private String roomNumber;
     private RoomType roomType;
     private List<Reservation> reservations;
 
     public Room(String roomNumber, RoomType roomType) {
-        super("rooms");
         this.roomNumber = roomNumber;
         this.roomType = roomType;
     }

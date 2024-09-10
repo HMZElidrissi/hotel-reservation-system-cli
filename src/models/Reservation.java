@@ -3,7 +3,7 @@ package models;
 import java.util.Date;
 import enums.ReservationStatus;
 
-public class Reservation extends Model {
+public class Reservation {
     private Client client;
     private Room room;
     private Date checkIn;
@@ -11,7 +11,6 @@ public class Reservation extends Model {
     private ReservationStatus status;
 
     public Reservation(Client client, Room room, Date checkIn, Date checkOut, ReservationStatus status) {
-        super("reservations");
         this.client = client;
         this.room = room;
         this.checkIn = checkIn;

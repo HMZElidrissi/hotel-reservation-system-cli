@@ -2,14 +2,13 @@ package models;
 
 import java.util.Map;
 
-public class Client extends Model {
+public class Client {
     private String name;
     private String email;
     private String phone;
     private Map<Long, Reservation> reservations;
 
     public Client(String name, String email, String phone) {
-        super("clients");
         this.name = name;
         this.email = email;
         this.phone = phone;
