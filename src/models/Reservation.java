@@ -14,17 +14,14 @@ public class Reservation {
     private LocalDate checkIn;
     private LocalDate checkOut;
     private ReservationStatus status;
-    private Season season;
     private Event event;
 
-    public Reservation(int id, Client client, Room room, LocalDate checkIn, LocalDate checkOut, ReservationStatus status, Season season, Event event) {
-        this.id = id;
+    public Reservation(Client client, Room room, LocalDate checkIn, LocalDate checkOut, ReservationStatus status, Event event) {
         this.client = client;
         this.room = room;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.status = status;
-        this.season = season;
         this.event = event;
     }
 
@@ -76,19 +73,34 @@ public class Reservation {
         this.status = status;
     }
 
-    public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
-    }
-
     public Event getEvent() {
         return event;
     }
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Reservation Details:\n" +
+                        "-------------------\n" +
+                        "ID: %d\n" +
+                        "Client: %s\n" +
+                        "Room: %s\n" +
+                        "Check-in: %s\n" +
+                        "Check-out: %s\n" +
+                        "Status: %s\n" +
+                        "Event: %s" +
+                        "\n-------------------\n",
+                id,
+                client.getName(),
+                room.getRoomNumber(),
+                checkIn,
+                checkOut,
+                status,
+                event
+        );
     }
 }

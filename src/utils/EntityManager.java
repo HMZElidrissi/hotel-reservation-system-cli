@@ -58,23 +58,98 @@ public class EntityManager<T> {
         return Optional.empty();
     }
 
-    public void save(Map<String, Object> data) {
+    public Optional<T> findBy(String column, Object value) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + tableName + " WHERE " + column + " = ?")) {
+            statement.setObject(1, value);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToModel(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
+    public T save(Map<String, Object> data) {
         StringBuilder sql = new StringBuilder("INSERT INTO " + tableName + " (");
         sql.append(String.join(", ", data.keySet()));
         sql.append(") VALUES (");
         sql.append(String.join(", ", data.keySet().stream().map(key -> "?").toArray(String[]::new)));
         sql.append(")");
 
-        try (PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+        try (PreparedStatement statement = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS)) {
             int index = 1;
             for (Object value : data.values()) {
                 statement.setObject(index++, value);
             }
-            statement.executeUpdate();
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating entity failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int newId = generatedKeys.getInt(1);
+                    return findById(newId).orElseThrow(() -> new SQLException("Created entity not found"));
+                } else {
+                    throw new SQLException("Creating entity failed, no ID obtained.");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+//    public void save(Map<String, Object> data) {
+//        StringBuilder sql = new StringBuilder("INSERT INTO " + tableName + " (");
+//        sql.append(String.join(", ", data.keySet()));
+//        sql.append(") VALUES (");
+//        sql.append(String.join(", ", data.keySet().stream().map(key -> "?").toArray(String[]::new)));
+//        sql.append(")");
+//
+//        try (PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+//            int index = 1;
+//            for (Object value : data.values()) {
+//                statement.setObject(index++, value);
+//            }
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+//    public int save(Map<String, Object> data) {
+//        StringBuilder sql = new StringBuilder("INSERT INTO " + tableName + " (");
+//        sql.append(String.join(", ", data.keySet()));
+//        sql.append(") VALUES (");
+//        sql.append(String.join(", ", data.keySet().stream().map(key -> "?").toArray(String[]::new)));
+//        sql.append(")");
+//
+//        try (PreparedStatement statement = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS)) {
+//            int index = 1;
+//            for (Object value : data.values()) {
+//                statement.setObject(index++, value);
+//            }
+//            int affectedRows = statement.executeUpdate();
+//
+//            if (affectedRows == 0) {
+//                throw new SQLException("Creating entity failed, no rows affected.");
+//            }
+//
+//            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+//                if (generatedKeys.next()) {
+//                    return generatedKeys.getInt(1);
+//                } else {
+//                    throw new SQLException("Creating entity failed, no ID obtained.");
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public void update(Map<String, Object> data, int id) {
         StringBuilder sql = new StringBuilder("UPDATE " + tableName + " SET ");
@@ -100,6 +175,19 @@ public class EntityManager<T> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int count() {
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM " + tableName)) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
     }
 
     private Optional<T> mapResultSetToModel(ResultSet resultSet) throws SQLException {

@@ -3,25 +3,23 @@ package models;
 import java.util.Map;
 
 public class Client {
-    private long id;
+    private int id;
     private String name;
     private String email;
     private String phone;
     private Map<Long, Reservation> reservations;
 
-    public Client(long id, String name, String email, String phone, Map<Long, Reservation> reservations) {
-        this.id = id;
+    public Client(String name, String email, String phone) {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.reservations = reservations;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
