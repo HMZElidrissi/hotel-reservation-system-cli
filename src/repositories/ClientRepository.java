@@ -32,4 +32,8 @@ public class ClientRepository {
         data.put("phone", client.getPhone());
         return data;
     }
+
+    public long count() {
+        return entityManager.count();
+    }
 }

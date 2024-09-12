@@ -2,10 +2,7 @@ import enums.Event;
 import models.Client;
 import models.Reservation;
 import models.Room;
-import services.ClientService;
-import services.PricingService;
-import services.ReservationService;
-import services.RoomService;
+import services.*;
 import utils.DateUtils;
 
 import java.time.LocalDate;
@@ -16,12 +13,14 @@ public class Main {
     private static ReservationService reservationService;
     private static ClientService clientService;
     private static RoomService roomService;
+    private static StatisticsService statisticsService;
 
     public static void main(String[] args) {
         try {
             reservationService = new ReservationService();
             clientService = new ClientService();
             roomService = new RoomService();
+            statisticsService = new StatisticsService();
         } catch (Exception e) {
             System.out.println("Erreur lors de l'initialisation des services.");
             e.printStackTrace();
@@ -54,7 +53,7 @@ public class Main {
                     checkRoomAvailability(roomService);
                     break;
                 case 7:
-                    // TODO: Display statistics
+                    statisticsService.getStatistics();
                     break;
                 case 8:
                     System.out.println("Fermeture de l'application.");

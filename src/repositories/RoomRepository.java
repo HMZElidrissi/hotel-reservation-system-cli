@@ -34,4 +34,8 @@ public class RoomRepository {
         conditions.put("check_out", checkOut);
         return entityManager.findAll(conditions);
     }
+
+    public long count() {
+        return entityManager.count();
+    }
 }

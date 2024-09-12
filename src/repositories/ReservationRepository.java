@@ -48,4 +48,8 @@ public class ReservationRepository {
     public List<Reservation> getAll() {
         return entityManager.findAll(new HashMap<>());
     }
+
+    public long count() {
+        return entityManager.count();
+    }
 }
