@@ -22,9 +22,9 @@ public class ReservationService {
         this.roomRepository = new RoomRepository();
     }
 
-    public void createReservation(Client client, Room room, LocalDate checkIn, LocalDate checkOut, Event event) {
+    public Reservation createReservation(Client client, Room room, LocalDate checkIn, LocalDate checkOut, Event event) {
         Reservation reservation = new Reservation(client, room, checkIn, checkOut, ReservationStatus.COMPLETED, event);
-        reservationRepository.create(reservation);
+        return reservationRepository.create(reservation);
     }
 
     public void modifyReservation(Reservation reservation) {

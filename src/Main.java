@@ -1,10 +1,9 @@
 import enums.Event;
-import enums.ReservationStatus;
 import models.Client;
 import models.Reservation;
 import models.Room;
-import repositories.ReservationRepository;
 import services.ClientService;
+import services.PricingService;
 import services.ReservationService;
 import services.RoomService;
 import utils.DateUtils;
@@ -40,7 +39,7 @@ public class Main {
                     createReservation(clientService, reservationService, roomService);
                     break;
                 case 2:
-                    modifyReservation(reservationService);
+                    modifyReservation(reservationService, roomService);
                     break;
                 case 3:
                     cancelReservation(reservationService);
@@ -105,19 +104,24 @@ public class Main {
         int roomNumber = scanner.nextInt();
         scanner.nextLine();
         Room selectedRoom = roomService.getRoomByNumber(roomNumber);
-        reservationService.createReservation(createdClient, selectedRoom, checkIn, checkOut, event);
+        Reservation createdReservation = reservationService.createReservation(createdClient, selectedRoom, checkIn, checkOut, event);
         System.out.println("Réservation créée avec succès.");
+        float price = PricingService.calculatePrice(createdReservation);
+        System.out.println("Le prix total est de: " + price + "MAD");
     }
 
-    public static void modifyReservation(ReservationService reservationService) {
+    public static void modifyReservation(ReservationService reservationService, RoomService roomService) {
         System.out.println("Veuillez entrer l'ID de la réservation à modifier: ");
         int reservationId = scanner.nextInt();
         scanner.nextLine();
         Reservation reservation = reservationService.getReservation(reservationId);
-        System.out.println("Veuillez entrer les nouvelles informations: ");
-        System.out.print("Date d'arrivée (jj/mm/aaaa): ");
+        System.out.print("La nouvelle date d'arrivée est (jj/mm/aaaa): ");
         LocalDate checkIn = DateUtils.getDate("Date d'arrivée (jj/mm/aaaa): ", scanner);
         LocalDate checkOut = DateUtils.getDate("Date de départ (jj/mm/aaaa): ", scanner);
+        System.out.print("Choisissez le numéro de la nouvelle chambre: ");
+        roomService.getRooms();
+        int roomNumber = scanner.nextInt();
+        Room selectedRoom = roomService.getRoomByNumber(roomNumber);
         System.out.print("Événement (anniversaire/conférence/réunion/rien): ");
         for (Event event : Event.values()) {
             System.out.println(event.ordinal() + 1 + ". " + event);
@@ -127,8 +131,12 @@ public class Main {
         Event event = Event.values()[eventChoice - 1];
         reservation.setCheckIn(checkIn);
         reservation.setCheckOut(checkOut);
+        reservation.setRoom(selectedRoom);
         reservation.setEvent(event);
         reservationService.modifyReservation(reservation);
+        System.out.println("Réservation modifiée avec succès.");
+        float price = PricingService.calculatePrice(reservation);
+        System.out.println("Le nouveau prix total est de: " + price + "MAD");
     }
 
     public static void cancelReservation(ReservationService reservationService) {
@@ -137,6 +145,8 @@ public class Main {
         scanner.nextLine();
         reservationService.cancelReservation(reservationId);
         System.out.println("Réservation annulée avec succès.");
+        float refund = PricingService.caltculateRefund(reservationService.getReservation(reservationId));
+        System.out.println("Le montant du remboursement est de: " + refund + "MAD");
     }
 
     public static void displayReservation(ReservationService reservationService) {

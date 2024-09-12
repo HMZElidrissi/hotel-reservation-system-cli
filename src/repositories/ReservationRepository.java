@@ -14,8 +14,8 @@ public class ReservationRepository {
         this.entityManager = new EntityManager<>(Reservation.class, "reservations");
     }
 
-    public void create(Reservation reservation) {
-        entityManager.save(mapModelData(reservation));
+    public Reservation create(Reservation reservation) {
+        return entityManager.save(mapModelData(reservation));
     }
 
     public void update(Reservation reservation) {

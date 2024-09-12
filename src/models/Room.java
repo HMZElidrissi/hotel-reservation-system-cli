@@ -5,25 +5,24 @@ import enums.RoomType;
 import java.util.List;
 
 public class Room {
-    private long id;
+    private int id;
     private String roomNumber;
     private RoomType roomType;
-    private Long price;
+    private float price;
     private List<Reservation> reservations;
 
-    public Room(long id, String roomNumber, RoomType roomType, Long price, List<Reservation> reservations) {
-        this.id = id;
+    public Room(String roomNumber, RoomType roomType, Long price, List<Reservation> reservations) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         this.price = price;
         this.reservations = reservations;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -43,11 +42,11 @@ public class Room {
         this.roomType = roomType;
     }
 
-    public Long getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
@@ -57,5 +56,17 @@ public class Room {
 
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Room Details:\n" +
+                        "-----------------\n" +
+                        "Room Number: %s\n" +
+                        "Room Type: %s\n" +
+                        "Price: %s\n" +
+                        "-----------------\n",
+                this.roomNumber, this.roomType, this.price);
     }
 }
