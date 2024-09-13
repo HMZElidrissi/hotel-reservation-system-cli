@@ -1,7 +1,6 @@
 package repositories;
 
 import enums.RoomType;
-import models.Reservation;
 import models.Room;
 
 import java.sql.PreparedStatement;
