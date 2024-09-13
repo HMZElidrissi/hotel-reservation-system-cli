@@ -26,10 +26,10 @@ public class Main {
             e.printStackTrace();
             return;
         }
-        displayMainMenu();
         scanner = new Scanner(System.in);
         int choice;
         do {
+            displayMainMenu();
             choice = scanner.nextInt();
             scanner.nextLine();
 

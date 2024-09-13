@@ -14,4 +14,13 @@ public enum RoomType {
     public float getRate() {
         return rate;
     }
+
+    public static RoomType fromString(String text) {
+        for (RoomType roomType : RoomType.values()) {
+            if (roomType.name().equalsIgnoreCase(text)) {
+                return roomType;
+            }
+        }
+        return null;
+    }
 }

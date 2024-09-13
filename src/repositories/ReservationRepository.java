@@ -1,55 +1,62 @@
 package repositories;
 
+import enums.Event;
 import enums.ReservationStatus;
+import models.Client;
 import models.Reservation;
-import utils.EntityManager;
+import models.Room;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class ReservationRepository {
-    private final EntityManager<Reservation> entityManager; // final because it should not be changed after initialization
+public class ReservationRepository extends GenericRepository<Reservation> {
+    private final RoomRepository roomRepository;
+    private final ClientRepository clientRepository;
 
     public ReservationRepository() throws SQLException {
-        this.entityManager = new EntityManager<>(Reservation.class, "reservations");
+        super(Reservation.class, "reservations");
+        this.roomRepository = new RoomRepository();
+        this.clientRepository = new ClientRepository();
     }
 
     public Reservation create(Reservation reservation) {
-        return entityManager.save(mapModelData(reservation));
+        return this.save(mapModelData(reservation));
     }
 
     public void update(Reservation reservation) {
-        entityManager.update(mapModelData(reservation), reservation.getId());
-    }
-
-    private Map<String, Object> mapModelData(Reservation reservation) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("client_id", reservation.getClient().getId());
-        data.put("room_id", reservation.getRoom().getId());
-        data.put("check_in", reservation.getCheckIn());
-        data.put("check_out", reservation.getCheckOut());
-        data.put("status", reservation.getStatus());
-        data.put("event", reservation.getEvent());
-        return data;
+        this.update(mapModelData(reservation), reservation.getId());
     }
 
     public void cancel(int id) {
-        Reservation reservation = entityManager.findById(id).orElse(null);
+        Reservation reservation = this.findById(id).orElse(null);
         if (reservation != null) {
             reservation.setStatus(ReservationStatus.CANCELLED);
-            entityManager.update(mapModelData(reservation), reservation.getId());
+            this.update(mapModelData(reservation), reservation.getId());
         }
     }
 
     public Reservation get(int id) {
-        return entityManager.findById(id).orElse(null);
+        return this.findById(id).orElse(null);
     }
 
     public List<Reservation> getAll() {
-        return entityManager.findAll(new HashMap<>());
+        return this.findAll(new HashMap<>());
     }
 
-    public long count() {
-        return entityManager.count();
+    @Override
+    protected Optional<Reservation> mapResultSetToModel(ResultSet resultSet) throws SQLException {
+        Client client = this.clientRepository.get(resultSet.getInt("client_id"));
+        Room room = this.roomRepository.get(resultSet.getInt("room_id"));
+        Event event = Event.fromString(resultSet.getString("event"));
+        return Optional.of(new Reservation(
+                resultSet.getInt("id"),
+                client,
+                room,
+                resultSet.getDate("check_in").toLocalDate(),
+                resultSet.getDate("check_out").toLocalDate(),
+                ReservationStatus.valueOf(resultSet.getString("status")),
+                event
+        ));
     }
 }

@@ -3,37 +3,34 @@ package repositories;
 import models.Client;
 import utils.EntityManager;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class ClientRepository {
-    private final EntityManager<Client> entityManager; // final because it should not be changed after initialization
-
+public class ClientRepository extends GenericRepository<Client> {
     public ClientRepository() throws SQLException {
-        this.entityManager = new EntityManager<>(Client.class, "clients");
+        super(Client.class, "clients");
     }
 
     public Client create(Client client) {
-        return entityManager.save(mapModelData(client));
+        return this.save(mapModelData(client));
     }
 
     public void update(Client client) {
-        entityManager.update(mapModelData(client), client.getId());
+        this.update(mapModelData(client), client.getId());
     }
 
     public Client get(int id) {
-        return entityManager.findById(id).orElse(null);
+        return this.findById(id).orElse(null);
     }
 
-    private Map<String, Object> mapModelData(Client client) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("name", client.getName());
-        data.put("email", client.getEmail());
-        data.put("phone", client.getPhone());
-        return data;
-    }
-
-    public long count() {
-        return entityManager.count();
+    @Override
+    protected Optional<Client> mapResultSetToModel(ResultSet resultSet) throws SQLException {
+        return Optional.of(new Client(
+                resultSet.getInt("id"),
+                resultSet.getString("name"),
+                resultSet.getString("email"),
+                resultSet.getString("phone")
+        ));
     }
 }

@@ -18,6 +18,13 @@ public class Room {
         this.reservations = reservations;
     }
 
+    public Room(int id, String roomNumber, RoomType roomType, float price) {
+        this.id = id;
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+        this.price = price;
+    }
+
     public int getId() {
         return id;
     }

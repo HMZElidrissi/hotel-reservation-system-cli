@@ -16,6 +16,16 @@ public class Reservation {
     private ReservationStatus status;
     private Event event;
 
+    public Reservation(int id, Client client, Room room, LocalDate checkIn, LocalDate checkOut, ReservationStatus status, Event event) {
+        this.id = id;
+        this.client = client;
+        this.room = room;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.status = status;
+        this.event = event;
+    }
+
     public Reservation(Client client, Room room, LocalDate checkIn, LocalDate checkOut, ReservationStatus status, Event event) {
         this.client = client;
         this.room = room;

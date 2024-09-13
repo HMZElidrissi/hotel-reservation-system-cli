@@ -15,4 +15,13 @@ public enum Event {
     public float getRate() {
         return rate;
     }
+
+    public static Event fromString(String text) {
+        for (Event event : Event.values()) {
+            if (event.toString().equalsIgnoreCase(text)) {
+                return event;
+            }
+        }
+        return null;
+    }
 }
