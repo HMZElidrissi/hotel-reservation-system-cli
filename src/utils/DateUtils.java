@@ -19,7 +19,7 @@ public class DateUtils {
                     date = null;
                 }
             } catch (Exception e) {
-                System.out.println("Erreur: Format de date invalide.");
+                System.out.println("Erreur: Format de date invalide ou date incorrecte.");
             }
         }
         return date;

@@ -6,6 +6,7 @@ import services.*;
 import utils.DateUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -88,40 +89,38 @@ public class Main {
         String clientPhone = scanner.nextLine();
         Client createdClient = clientService.createClient(clientName, clientEmail, clientPhone);
 
-        System.out.print("Date d'arrivée (jj/mm/aaaa): ");
         LocalDate checkIn = DateUtils.getDate("Date d'arrivée (jj/mm/aaaa): ", scanner);
         LocalDate checkOut = DateUtils.getDate("Date de départ (jj/mm/aaaa): ", scanner);
-        System.out.print("Événement (anniversaire/conférence/réunion/rien): ");
+        System.out.print("\nÉvénement (anniversaire/conférence/réunion/rien): \n");
         for (Event event : Event.values()) {
             System.out.println(event.ordinal() + 1 + ". " + event);
         }
         int eventChoice = scanner.nextInt();
         scanner.nextLine();
         Event event = Event.values()[eventChoice - 1];
-        System.out.print("Choisissez le numéro de la chambre: ");
+        System.out.print("\nChoisissez le numéro de la chambre: \n");
         roomService.getRooms();
-        int roomNumber = scanner.nextInt();
-        scanner.nextLine();
+        String roomNumber = scanner.nextLine();
         Room selectedRoom = roomService.getRoomByNumber(roomNumber);
         Reservation createdReservation = reservationService.createReservation(createdClient, selectedRoom, checkIn, checkOut, event);
-        System.out.println("Réservation créée avec succès.");
+        System.out.println("\nRéservation créée avec succès.\n");
         float price = PricingService.calculatePrice(createdReservation);
-        System.out.println("Le prix total est de: " + price + "MAD");
+        System.out.println("\nLe prix total est de: " + price + " MAD\n");
     }
 
     public static void modifyReservation(ReservationService reservationService, RoomService roomService) {
-        System.out.println("Veuillez entrer l'ID de la réservation à modifier: ");
+        System.out.println("\nVeuillez entrer l'ID de la réservation à modifier: \n");
         int reservationId = scanner.nextInt();
         scanner.nextLine();
         Reservation reservation = reservationService.getReservation(reservationId);
-        System.out.print("La nouvelle date d'arrivée est (jj/mm/aaaa): ");
-        LocalDate checkIn = DateUtils.getDate("Date d'arrivée (jj/mm/aaaa): ", scanner);
-        LocalDate checkOut = DateUtils.getDate("Date de départ (jj/mm/aaaa): ", scanner);
+        LocalDate checkIn = DateUtils.getDate("La nouvelle date d'arrivée (jj/mm/aaaa): ", scanner);
+        LocalDate checkOut = DateUtils.getDate("La nouvelle date de départ (jj/mm/aaaa): ", scanner);
         System.out.print("Choisissez le numéro de la nouvelle chambre: ");
         roomService.getRooms();
-        int roomNumber = scanner.nextInt();
+        String roomNumber = scanner.nextLine();
+
         Room selectedRoom = roomService.getRoomByNumber(roomNumber);
-        System.out.print("Événement (anniversaire/conférence/réunion/rien): ");
+        System.out.print("\nÉvénement (anniversaire/conférence/réunion/rien): \n");
         for (Event event : Event.values()) {
             System.out.println(event.ordinal() + 1 + ". " + event);
         }
@@ -133,30 +132,30 @@ public class Main {
         reservation.setRoom(selectedRoom);
         reservation.setEvent(event);
         reservationService.modifyReservation(reservation);
-        System.out.println("Réservation modifiée avec succès.");
+        System.out.println("\nRéservation modifiée avec succès.\n");
         float price = PricingService.calculatePrice(reservation);
-        System.out.println("Le nouveau prix total est de: " + price + "MAD");
+        System.out.println("Le nouveau prix total est de: " + price + " MAD\n");
     }
 
     public static void cancelReservation(ReservationService reservationService) {
-        System.out.println("Veuillez entrer l'ID de la réservation à annuler: ");
+        System.out.println("\nVeuillez entrer l'ID de la réservation à annuler: ");
         int reservationId = scanner.nextInt();
         scanner.nextLine();
         reservationService.cancelReservation(reservationId);
-        System.out.println("Réservation annulée avec succès.");
+        System.out.println("\nRéservation annulée avec succès.");
         float refund = PricingService.caltculateRefund(reservationService.getReservation(reservationId));
-        System.out.println("Le montant du remboursement est de: " + refund + "MAD");
+        System.out.println("\nLe montant du remboursement est de: " + refund + " MAD");
     }
 
     public static void displayReservation(ReservationService reservationService) {
-        System.out.println("Veuillez entrer l'ID de la réservation à afficher: ");
+        System.out.println("\nVeuillez entrer l'ID de la réservation à afficher: ");
         int reservationId = scanner.nextInt();
         scanner.nextLine();
         Reservation reservation = reservationService.getReservation(reservationId);
         if (reservation != null) {
             System.out.println(reservation);
         } else {
-            System.out.println("Réservation introuvable.");
+            System.out.println("\nRéservation introuvable.");
         }
     }
 
@@ -165,9 +164,17 @@ public class Main {
     }
 
     public static void checkRoomAvailability(RoomService roomService) {
-        System.out.println("Veuillez entrer les dates de réservation: ");
-        LocalDate checkIn = DateUtils.getDate("Date d'arrivée (jj/mm/aaaa): ", scanner);
-        LocalDate checkOut = DateUtils.getDate("Date de départ (jj/mm/aaaa): ", scanner);
-        roomService.getAvailableRooms(checkIn, checkOut).forEach(System.out::println);
+        System.out.println("\nVeuillez entrer les dates de réservation: ");
+        LocalDate checkIn = DateUtils.getDate("\nDate d'arrivée (jj/mm/aaaa): ", scanner);
+        LocalDate checkOut = DateUtils.getDate("\nDate de départ (jj/mm/aaaa): ", scanner);
+        List<String> availableRoomNumbers = roomService.getAvailableRooms(checkIn, checkOut);
+        if (availableRoomNumbers.isEmpty()) {
+            System.out.println("\nAucune chambre disponible pour ces dates.");
+        } else {
+            System.out.println("\nLes chambres suivantes sont disponibles: ");
+            availableRoomNumbers.stream()
+                    .map(roomNumber -> roomService.getRoomByNumber(roomNumber))
+                    .forEach(System.out::println);
+        }
     }
 }

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class RoomService {
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
     public RoomService() throws SQLException {
         this.roomRepository = new RoomRepository();
@@ -18,11 +18,11 @@ public class RoomService {
         roomRepository.getAll().forEach(System.out::println);
     }
 
-    public Room getRoomByNumber(int number) {
-        return roomRepository.getRoomByNumber(number);
+    public Room getRoomByNumber(String roomNumber) {
+        return roomRepository.getRoomByNumber(roomNumber);
     }
 
-    public List<Room> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
-        return roomRepository.getAvailableRooms(checkIn, checkOut);
+    public List<String> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
+        return roomRepository.getAvailableRoomNumbers(checkIn, checkOut);
     }
 }

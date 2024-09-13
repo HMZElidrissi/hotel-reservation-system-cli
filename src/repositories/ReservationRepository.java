@@ -59,4 +59,16 @@ public class ReservationRepository extends GenericRepository<Reservation> {
                 event
         ));
     }
+
+    @Override
+    protected Map<String, Object> mapModelData(Reservation reservation) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("client_id", reservation.getClient().getId());
+        data.put("room_id", reservation.getRoom().getId());
+        data.put("check_in", reservation.getCheckIn());
+        data.put("check_out", reservation.getCheckOut());
+        data.put("status", reservation.getStatus());
+        data.put("event", reservation.getEvent());
+        return data;
+    }
 }

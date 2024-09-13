@@ -33,4 +33,13 @@ public class ClientRepository extends GenericRepository<Client> {
                 resultSet.getString("phone")
         ));
     }
+
+    @Override
+    protected Map<String, Object> mapModelData(Client client) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", client.getName());
+        data.put("email", client.getEmail());
+        data.put("phone", client.getPhone());
+        return data;
+    }
 }

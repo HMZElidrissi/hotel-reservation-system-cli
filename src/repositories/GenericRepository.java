@@ -84,7 +84,11 @@ public abstract class GenericRepository<T> {
         try (PreparedStatement statement = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS)) {
             int index = 1;
             for (Object value : data.values()) {
-                statement.setObject(index++, value);
+                if (value instanceof Enum) {
+                    statement.setObject(index++, ((Enum<?>) value).name(), Types.OTHER);
+                } else {
+                    statement.setObject(index++, value);
+                }
             }
             int affectedRows = statement.executeUpdate();
 
@@ -113,7 +117,11 @@ public abstract class GenericRepository<T> {
         try (PreparedStatement statement = connection.prepareStatement(sql.toString())) {
             int index = 1;
             for (Object value : data.values()) {
-                statement.setObject(index++, value);
+                if (value instanceof Enum) {
+                    statement.setObject(index++, ((Enum<?>) value).name(), Types.OTHER);
+                } else {
+                    statement.setObject(index++, value);
+                }
             }
             statement.setInt(index, id);
             statement.executeUpdate();
@@ -146,16 +154,7 @@ public abstract class GenericRepository<T> {
 
     protected abstract Optional<T> mapResultSetToModel(ResultSet resultSet) throws SQLException;
 
-    protected Map<String, Object> mapModelData(T model) {
-        Map<String, Object> data = new HashMap<>();
-        for (Field field : model.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            try {
-                data.put(field.getName(), field.get(model));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return data;
+    protected Map<String, Object> mapModelData(T model){
+        return new HashMap<>();
     }
 }
