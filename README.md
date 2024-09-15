@@ -22,19 +22,13 @@ classDiagram
 
     class Reservation {
         -int id
-        -Client client
-        -Room room
         -LocalDate checkInDate
         -LocalDate checkOutDate
         -ReservationStatus status
         +getId() int
-        +getClient() Client
-        +getRoom() Room
         +getCheckInDate() LocalDate
         +getCheckOutDate() LocalDate
         +getStatus() ReservationStatus
-        +setClient(Client)
-        +setRoom(Room)
         +setCheckInDate(LocalDate)
         +setCheckOutDate(LocalDate)
         +setStatus(ReservationStatus)
