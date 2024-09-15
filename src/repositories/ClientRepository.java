@@ -1,7 +1,6 @@
 package repositories;
 
 import models.Client;
-import utils.EntityManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

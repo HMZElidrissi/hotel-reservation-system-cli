@@ -2,6 +2,87 @@
 
 Ce projet vise à développer une application console en Java pour gérer les réservations d'hôtel. L'application devra inclure des fonctionnalités avancées pour la gestion des réservations, l'affichage des détails, la vérification de la disponibilité des chambres, et des rapports statistiques. Elle doit également respecter des exigences techniques précises telles que l'utilisation de l'héritage, du polymorphisme, des collections, et des streams en Java.
 
+## Diagramme de Classes
+
+```mermaid
+classDiagram
+    class Client {
+        -int id
+        -String name
+        -String email
+        -String phone
+        +getId() int
+        +getName() String
+        +getEmail() String
+        +getPhone() String
+        +setName(String)
+        +setEmail(String)
+        +setPhone(String)
+    }
+
+    class Reservation {
+        -int id
+        -Client client
+        -Room room
+        -LocalDate checkInDate
+        -LocalDate checkOutDate
+        -ReservationStatus status
+        +getId() int
+        +getClient() Client
+        +getRoom() Room
+        +getCheckInDate() LocalDate
+        +getCheckOutDate() LocalDate
+        +getStatus() ReservationStatus
+        +setClient(Client)
+        +setRoom(Room)
+        +setCheckInDate(LocalDate)
+        +setCheckOutDate(LocalDate)
+        +setStatus(ReservationStatus)
+    }
+
+    class Room {
+        -int id
+        -String roomNumber
+        -RoomType roomType
+        -float price
+        +getId() int
+        +getRoomNumber() String
+        +getRoomType() RoomType
+        +getPrice() float
+        +setRoomNumber(String)
+        +setRoomType(RoomType)
+        +setPrice(float)
+    }
+
+    class ReservationStatus {
+        <<enumeration>>
+        ACTIVE
+        COMPLETED
+        CANCELLED
+    }
+
+    class Event {
+        <<enumeration>>
+        BIRTHDAY
+        CONFERENCE
+        MEETING
+        NONE
+    }
+
+    class RoomType {
+        <<enumeration>>
+        SINGLE
+        DOUBLE
+        SUITE
+    }
+
+    Reservation "*" -- "1" Client
+    Reservation "*" -- "1" Room
+    Reservation "*" -- "1" ReservationStatus
+    Reservation "*" -- "1" Event
+    Room "*" -- "1" RoomType
+```
+
 ## Objectifs
 
 Développer une application console robuste pour la gestion des réservations d'hôtel. Implémenter des fonctionnalités avancées telles que les rapports statistiques, les règles de tarification dynamiques, et l'intégration d'une base de données PostgreSQL. L'application doit être organisée en couches (Service, etc.), utiliser des design patterns (Singleton, Repository Pattern), et appliquer des concepts avancés de Java comme les Streams, les Optionals, et les Enums. Une version ultérieure du projet devra intégrer JDBC et Java Streams.
